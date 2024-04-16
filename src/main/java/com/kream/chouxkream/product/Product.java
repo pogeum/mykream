@@ -1,6 +1,5 @@
 package com.kream.chouxkream.product;
 
-import com.kream.chouxkream.brand.Brand;
 import com.kream.chouxkream.category.Category;
 import com.kream.chouxkream.productimages.ProductImages;
 import com.kream.chouxkream.productsize.ProductSize;

@@ -1,4 +1,4 @@
-package com.kream.chouxkream.brand;
+package com.kream.chouxkream.product;
 
 import com.kream.chouxkream.product.Product;
 import lombok.AllArgsConstructor;
