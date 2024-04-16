@@ -1,4 +1,4 @@
-package com.kream.chouxkream.productimages.model.entity;
+package com.kream.chouxkream.product.model.entity;
 
 import com.kream.chouxkream.product.model.entity.Product;
 import lombok.AllArgsConstructor;
@@ -29,7 +29,7 @@ public class ProductImages {
     @Column(nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean isActive;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no")
     private Product product;
 }

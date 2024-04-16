@@ -1,6 +1,7 @@
-package com.kream.chouxkream.category.model.entity;
 
-import com.kream.chouxkream.product.model.entity.Product;
+package com.kream.chouxkream.product.model.entity;
+
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public class Category {
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp updateDate;
 
-    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Builder.Default
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
 }

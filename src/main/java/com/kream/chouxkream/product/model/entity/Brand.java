@@ -1,7 +1,7 @@
-package com.kream.chouxkream.brand.model.entity;
 
-import com.kream.chouxkream.product.model.entity.Product;
-import com.kream.chouxkream.user.model.entity.UserRole;
+package com.kream.chouxkream.product.model.entity;
+
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +40,7 @@ public class Brand {
     @Column(nullable = false, columnDefinition = "BIT DEFAULT 0")
     private boolean isActive;
 
-    @OneToMany(mappedBy = "brand", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Builder.Default
+    @OneToMany(mappedBy = "brand", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
 }
