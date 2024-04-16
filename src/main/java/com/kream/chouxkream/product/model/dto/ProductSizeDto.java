@@ -1,4 +1,4 @@
-package com.kream.chouxkream.productsize;
+package com.kream.chouxkream.product.model.dto;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
 package com.kream.chouxkream.user.model.entity;
 
-import com.kream.chouxkream.productsize.ProductSize;
+import com.kream.chouxkream.product.model.entity.ProductSize;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -2,9 +2,9 @@ package com.kream.chouxkream.user.controller;
 
 import com.kream.chouxkream.common.model.dto.ResponseMessageDto;
 import com.kream.chouxkream.common.model.dto.StatusCode;
-import com.kream.chouxkream.productsize.ProductSize;
-import com.kream.chouxkream.productsize.ProductSizeDto;
-import com.kream.chouxkream.productsize.ProductSizeService;
+import com.kream.chouxkream.product.ProductSizeService;
+import com.kream.chouxkream.product.model.dto.ProductSizeDto;
+import com.kream.chouxkream.product.model.entity.ProductSize;
 import com.kream.chouxkream.user.ResourceNotFoundException;
 import com.kream.chouxkream.user.model.entity.User;
 import com.kream.chouxkream.user.service.UserService;
@@ -16,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +38,7 @@ public class WishlistController {
 //          wishlist 에 productsize들 각각 이름,사진 가격 꺼내와야함 String으로?
 
 
-            StatusCode statusCode = StatusCode.FIND_USER_SUCCESS;
+            StatusCode statusCode = StatusCode.SUCCESS;
             ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
             //프로덕트사이즈리스폰스해야댐ㅅㅂ 디티오로?
             return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
@@ -65,7 +63,7 @@ public class WishlistController {
             ProductSize productSize = productSizeService.getProductSizeByNo(productSizeDto.getProductSizeNo());
             boolean isWishlistRegistered = wishlistService.updateWishlist(user, productSize);
 
-            StatusCode statusCode = StatusCode.FIND_USER_SUCCESS;
+            StatusCode statusCode = StatusCode.SUCCESS;
             ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
             responseMessageDto.addData("isWishlistRegistered" , isWishlistRegistered); // 상품정보..
             responseMessageDto.addData("productSizeNo" , productSizeDto.getProductSizeNo());

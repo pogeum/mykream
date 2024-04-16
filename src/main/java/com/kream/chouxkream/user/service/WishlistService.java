@@ -1,6 +1,6 @@
 package com.kream.chouxkream.user.service;
 
-import com.kream.chouxkream.productsize.ProductSize;
+import com.kream.chouxkream.product.model.entity.ProductSize;
 import com.kream.chouxkream.user.model.entity.User;
 import com.kream.chouxkream.user.model.entity.Wishlist;
 import com.kream.chouxkream.user.repository.WishlistRepository;

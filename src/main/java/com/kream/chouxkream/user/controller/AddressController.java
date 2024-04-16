@@ -39,7 +39,7 @@ public class AddressController {
 
             addressService.addAddress(user, addressDto);
 
-            StatusCode statusCode = StatusCode.FIND_USER_SUCCESS;
+            StatusCode statusCode = StatusCode.SUCCESS;
             ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
             return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
 
@@ -67,7 +67,7 @@ public class AddressController {
 
             List<AddressDto> addressDtoList = addressService.setAddressDto(pagingAddress);
 
-            StatusCode statusCode = StatusCode.FIND_USER_SUCCESS;
+            StatusCode statusCode = StatusCode.SUCCESS;
             ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
             responseMessageDto.addData("addressList", addressDtoList);
             return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
@@ -91,7 +91,7 @@ public class AddressController {
 
             addressService.updateAddress(addressNo, newaddressDto);
 
-            StatusCode statusCode = StatusCode.FIND_USER_SUCCESS;
+            StatusCode statusCode = StatusCode.SUCCESS;
             ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
             return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
 
@@ -113,7 +113,7 @@ public class AddressController {
 
             addressService.setDefaultAddress(addressNo);
 
-            StatusCode statusCode = StatusCode.FIND_USER_SUCCESS;
+            StatusCode statusCode = StatusCode.SUCCESS;
             ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
             return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
 
@@ -135,7 +135,7 @@ public class AddressController {
 
             addressService.deleteAddress(addressNo);
 
-            StatusCode statusCode = StatusCode.FIND_USER_SUCCESS;
+            StatusCode statusCode = StatusCode.SUCCESS;
             ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
             return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
 
