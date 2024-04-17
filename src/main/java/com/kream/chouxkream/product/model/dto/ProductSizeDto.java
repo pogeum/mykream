@@ -18,4 +18,5 @@ public class ProductSizeDto {
     public ProductSizeDto() {
         // 기본 생성자 추가
     }
+
 }

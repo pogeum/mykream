@@ -4,7 +4,7 @@ import com.kream.chouxkream.bid.repository.BidRepository;
 import com.kream.chouxkream.product.model.entity.Product;
 import com.kream.chouxkream.product.repository.ProductImagesRepository;
 import com.kream.chouxkream.product.model.entity.ProductSize;
-import com.kream.chouxkream.product.repository.ProductSizeRepositroy;
+import com.kream.chouxkream.product.repository.ProductSizeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductSizeRepositroy productSizeRepositroy;
+    private final ProductSizeRepository productSizeRepository;
     private final ProductImagesRepository productImagesRepository;
     private final BidRepository bidRepository;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -51,7 +51,7 @@ public class ProductService {
     @Transactional
     public List<ProductSize> getProductSizeById(Long productNo) {
 
-        return productSizeRepositroy.findByProductNo(productNo);
+        return productSizeRepository.findByProductNo(productNo);
     }
 
     @Transactional

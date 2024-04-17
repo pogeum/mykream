@@ -29,7 +29,6 @@ public class WishlistService {
             wishlist.setUser(user);
             user.getWishlist().add(wishlist);
             this.wishListRepository.save(wishlist);
-
             return true;
         } else { //있는 경우
 
@@ -39,7 +38,6 @@ public class WishlistService {
                     this.wishListRepository.delete(w);
                 }
             }
-
             return false;
         }
     }

@@ -17,7 +17,9 @@ public enum StatusCode {
     AUTH_EMAIL_CHECK_FAILED(4014, "인증메일 인증 실패 하였습니다."),
     FIND_EAMIL_FAILED(4015, "이메일 찾기 실패 하였습니다."),
     FIND_USER_FAILED(4016, "일치하는 사용자 정보를 찾을 수 없습니다."),
+
     USER_INFO_UPDATE_FAILED(4017, "사용자 정보 변경 실패"),
+
 
     // 결제 관련 에러 코드
     PAYMENT_REJECTED(4004, "결제가 거부되었습니다."),

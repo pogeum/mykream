@@ -3,10 +3,12 @@ package com.kream.chouxkream.user.controller;
 import com.kream.chouxkream.bid.model.entity.Bid;
 import com.kream.chouxkream.common.model.dto.ResponseMessageDto;
 import com.kream.chouxkream.common.model.dto.StatusCode;
+
 import com.kream.chouxkream.product.model.dto.ProductSizeDto;
 import com.kream.chouxkream.product.model.entity.ProductSize;
 import com.kream.chouxkream.product.service.ProductSizeService;
 import com.kream.chouxkream.product.service.ProductService;
+
 import com.kream.chouxkream.user.model.dto.*;
 import com.kream.chouxkream.user.model.entity.Address;
 import com.kream.chouxkream.user.model.entity.User;
@@ -27,10 +29,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.mail.ReadOnlyFolderException;
 import javax.validation.Valid;
+
 import java.time.LocalDate;
 import java.util.List;
+
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -308,48 +314,168 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
     }
 
-    @ApiOperation(value = "비밀번호 확인 및 변경")
-    @PutMapping("/me/password")
-    public ResponseEntity<ResponseMessageDto> updatePassword(@Valid @RequestBody UpdatePasswordDto updatePasswordDto) {
+//    @ApiOperation(value = "비밀번호 변경")
+//    @PostMapping("/me/password")
+//    public ResponseEntity<ResponseMessageDto> updatePassword(@Valid @RequestBody PasswordDto updatePasswordDto) {
+//
+//        // **
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String email = authentication.getName();
+//
+//        // 사용자 검증
+//        boolean isExistEmail = userService.isEmailExists(email);
+//        if (!isExistEmail) {
+//
+//            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+//            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+//            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//        }
+//
+//        String updatePassword = updatePasswordDto.getPassword();
+//        userService.updatePassword(email, updatePassword);
+//
+//        StatusCode statusCode = StatusCode.USER_INFO_UPDATE_SUCCESS;
+//        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+//        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//    }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+//    @ApiOperation(value = "비밀번호 확인 및 변경")
+//    @PostMapping("/me/password")
+//    public ResponseEntity<ResponseMessageDto> checkAndUpdatePassword(@Valid @RequestBody PasswordDto passwordDto) {
+//
+//        // **
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String email = authentication.getName();
+//
+//        //
+//
+//        // 사용자 검증
+//        boolean isExistEmail = userService.isEmailExists(email);
+//        if (!isExistEmail) {
+//
+//            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+//            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+//            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//        }
+//
+//
+//        String checkPassword = checkPasswordDto.getPassword();
+//        boolean isCheckPassword = userService.isPasswordCheck(email, checkPassword);
+//
+//        if (!isCheckPassword) {// 클라이언트의 재입력 기다리기, 비동기로. 어떻게 ,., 응답보냄?
+//
+//            StatusCode statusCode = StatusCode.CHECK_PASSWORD_FAILED;
+//            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+//            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//        } else {
+//            String updatePassword = updatePasswordDto.getPassword();
+//            userService.updatePassword(email, updatePassword);
+//
+//            StatusCode statusCode = StatusCode.USER_INFO_UPDATE_SUCCESS;
+//            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+//            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//        }
+//
+//    }
 
+//    @ApiOperation(value = "포인트 조회")
+//    @GetMapping("/me/point")
+//    public ResponseEntity<ResponseMessageDto> getPoints(@RequestBody(required = false) PointCouponDto pointCouponDto) { // 입력 매개변수로 포인트적립쿠폰? 입력 받아오는거 넣기. 필수 X.
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String email = authentication.getName();
+//        String email = "test@test.com";
+//        User user = userService.findByEmail(email).get();
+//        System.out.println(user.getEmail());
+//       try  {
+//           User user = userService.findByEmail(email)
+//                   .orElseThrow(() -> new ResourceNotFoundException("not found user"));
+
+//<<<<<<< HEAD
+//           UserInfoDto userInfoDto = new UserInfoDto(user);
+//           StatusCode statusCode = StatusCode.FIND_USER_SUCCESS;
+//           ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
+//           responseMessageDto.addData("point", userInfoDto.getPoint());
+//           return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//
+//       } catch (ResourceNotFoundException ex){
+//           StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+//           ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
+//           return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//        }
+//
+////        Optional<User> optionalUser = userService.findByEmail(email);
+////        if (optionalUser.isPresent()) {
+////
+////            UserInfoDto userInfoDto = new UserInfoDto(optionalUser.get());
+////
+////            StatusCode statusCode = StatusCode.FIND_USER_SUCCESS;
+////            ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
+////            responseMessageDto.addData("point", userInfoDto.getPoint());
+////
+////            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+////        } else {
+////
+////            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+////            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+////            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+////        }
+//
+//
+//    }
+//
+//    @ApiOperation(value = "회원 탈퇴") //비활성화
+//    @DeleteMapping("/me")
+//    public ResponseEntity<ResponseMessageDto> deActivateUser() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+////        String email = authentication.getName();
+//        String email = "ee121111@test.com";
+//        try {
+//            User user = userService.findByEmail(email)
+//                    .orElseThrow(() -> new ResourceNotFoundException("not found user"));
+//
+//            userService.DeActivateUser(email);
+//=======
         // 사용자 검증
-        boolean isExistEmail = userService.isEmailExists(email);
-        if (!isExistEmail) {
-
-            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
-            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
-            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
-        }
-
-        // 수정 전 비밀번호, 수정 후 비밀번호 비교
-        String oldPassword = updatePasswordDto.getOldPassword();
-        String newPassword = updatePasswordDto.getNewPassword();
-        if (oldPassword.equals(newPassword)) {
-
-            StatusCode statusCode = StatusCode.USER_INFO_UPDATE_FAILED;
-            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
-            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
-        }
-
-        // 입력한 비밀번호 검증
-        boolean isCheckPassword = userService.isPasswordCheck(email, oldPassword);
-        if (!isCheckPassword) {
-
-            StatusCode statusCode = StatusCode.USER_INFO_UPDATE_FAILED;
-            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
-            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
-        }
-
-        // 비밀번호 수정
-        userService.updatePassword(email, newPassword);
-
-        StatusCode statusCode = StatusCode.SUCCESS;
-        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
-        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
-    }
+//        boolean isExistEmail = userService.isEmailExists(email);
+//        if (!isExistEmail) {
+//>>>>>>> 22d008e92c3d8a2e4c974f8882e4abb6f02511bf
+//
+//            StatusCode statusCode = StatusCode.FIND_USER_SUCCESS;
+//            ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
+//            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//        } catch(ResourceNotFoundException ex) {
+//            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+//            ResponseMessageDto responseMessageDto = setResponseMessageDto(statusCode);
+//            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//        }
+//
+//        // 수정 전 비밀번호, 수정 후 비밀번호 비교
+//        String oldPassword = updatePasswordDto.getOldPassword();
+//        String newPassword = updatePasswordDto.getNewPassword();
+//        if (oldPassword.equals(newPassword)) {
+//
+//            StatusCode statusCode = StatusCode.USER_INFO_UPDATE_FAILED;
+//            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+//            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//        }
+//
+//        // 입력한 비밀번호 검증
+//        boolean isCheckPassword = userService.isPasswordCheck(email, oldPassword);
+//        if (!isCheckPassword) {
+//
+//            StatusCode statusCode = StatusCode.USER_INFO_UPDATE_FAILED;
+//            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+//            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//        }
+//
+//        // 비밀번호 수정
+//        userService.updatePassword(email, newPassword);
+//
+//        StatusCode statusCode = StatusCode.SUCCESS;
+//        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+//        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+//
+//    }
 
     @ApiOperation(value = "회원 구매 입찰 내역 조회")
     @GetMapping("/me/buy")

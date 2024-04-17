@@ -18,6 +18,7 @@ import com.kream.chouxkream.user.model.entity.Address;
 import com.kream.chouxkream.user.model.entity.AuthNumber;
 import com.kream.chouxkream.user.model.entity.User;
 import com.kream.chouxkream.user.model.entity.UserRole;
+import com.kream.chouxkream.user.model.entity.Wishlist;
 import com.kream.chouxkream.user.repository.AuthNumberRepositroy;
 import com.kream.chouxkream.user.repository.UserRepository;
 import com.kream.chouxkream.user.repository.UserRoleRepository;
@@ -41,6 +42,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -420,4 +422,5 @@ public class UserService {
         bid.setBidStatus(BidStatus.bid_delete);
         bidRepository.save(bid);
     }
+
 }
