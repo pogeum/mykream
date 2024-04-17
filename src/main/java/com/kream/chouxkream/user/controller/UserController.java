@@ -4,14 +4,18 @@ import com.kream.chouxkream.bid.model.entity.Bid;
 import com.kream.chouxkream.common.model.dto.ResponseMessageDto;
 import com.kream.chouxkream.common.model.dto.StatusCode;
 
-import com.kream.chouxkream.user.ResourceNotFoundException;
-
+import com.kream.chouxkream.product.model.dto.ProductSizeDto;
+import com.kream.chouxkream.product.model.entity.ProductSize;
+import com.kream.chouxkream.product.service.ProductSizeService;
 import com.kream.chouxkream.product.service.ProductService;
 
 import com.kream.chouxkream.user.model.dto.*;
+import com.kream.chouxkream.user.model.entity.Address;
 import com.kream.chouxkream.user.model.entity.User;
 import com.kream.chouxkream.user.model.entity.Wishlist;
+import com.kream.chouxkream.user.service.AddressService;
 import com.kream.chouxkream.user.service.UserService;
+import com.kream.chouxkream.user.service.WishlistService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,9 +42,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
 public class UserController {
-
+    private final WishlistService wishlistService;
+    private final AddressService addressService;
     private final UserService userService;
     private final ProductService productService;
+    private final ProductSizeService productSizeService;
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/join")
@@ -474,9 +480,9 @@ public class UserController {
     @ApiOperation(value = "회원 구매 입찰 내역 조회")
     @GetMapping("/me/buy")
     public ResponseEntity<ResponseMessageDto> getBuyBidList(@RequestParam(value = "per_page", defaultValue = "10") int perPage,
-                                                         @RequestParam(value = "cursor", defaultValue = "1") int cursor,
-                                                         @RequestParam(value = "start_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                         @RequestParam(value = "end_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+                                                            @RequestParam(value = "cursor", defaultValue = "1") int cursor,
+                                                            @RequestParam(value = "start_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                            @RequestParam(value = "end_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -508,9 +514,9 @@ public class UserController {
     @ApiOperation(value = "회원 판매 입찰 내역 조회")
     @GetMapping("/me/sell")
     public ResponseEntity<ResponseMessageDto> getSellBidList(@RequestParam(value = "per_page", defaultValue = "10") int perPage,
-                                                         @RequestParam(value = "cursor", defaultValue = "1") int cursor,
-                                                         @RequestParam(value = "start_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                         @RequestParam(value = "end_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+                                                             @RequestParam(value = "cursor", defaultValue = "1") int cursor,
+                                                             @RequestParam(value = "start_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                             @RequestParam(value = "end_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -604,4 +610,243 @@ public class UserController {
         ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
         return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
     }
+
+
+    @ApiOperation(value = "포인트 조회")
+    @GetMapping("/me/point")
+    public ResponseEntity<ResponseMessageDto> getPoints() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+
+        // 사용자 조회
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+
+            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+        }
+
+        UserInfoDto userInfoDto = new UserInfoDto(optionalUser.get());
+        StatusCode statusCode = StatusCode.SUCCESS;
+        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+        responseMessageDto.addData("point", userInfoDto.getPoint());
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+    }
+
+    @ApiOperation(value = "회원 탈퇴") //비활성화
+    @DeleteMapping("/me")
+    public ResponseEntity<ResponseMessageDto> deActivateUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        // 사용자 조회
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+
+            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+        }
+
+        userService.DeActivateUser(email);
+
+        StatusCode statusCode = StatusCode.SUCCESS;
+        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+
+    }
+
+    //=========================================== 배송지 ======================================================================================
+
+
+    @ApiOperation(value = "회원 배송지 추가")
+    @PostMapping("/me/address")
+    public ResponseEntity<ResponseMessageDto> addAddress(@RequestBody AddressDto addressDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        // 사용자 조회
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+
+            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+        }
+
+        addressService.addAddress(optionalUser.get(), addressDto);
+
+        StatusCode statusCode = StatusCode.SUCCESS;
+        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+    }
+
+    @ApiOperation(value = "회원 배송지 조회")
+    @GetMapping("/me/address")
+    public ResponseEntity<ResponseMessageDto> getAddressList(@RequestParam(value = "per_page", defaultValue = "10") int perPage,
+                                                             @RequestParam(value = "cursor", defaultValue = "1")int cursor) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        // 사용자 조회
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+
+            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+        }
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"addressNo");
+        PageRequest pageRequest = PageRequest.of(cursor - 1, perPage, sort);
+
+        Page<Address> pagingAddress = addressService.getPagedAddressesByUser(optionalUser.get(),pageRequest);
+
+        List<AddressDto> addressDtoList = addressService.setAddressDto(pagingAddress);
+
+        StatusCode statusCode = StatusCode.SUCCESS;
+        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+        responseMessageDto.addData("addressList", addressDtoList);
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+
+    }
+
+    @ApiOperation(value = "회원 배송지 수정")
+    @PatchMapping("/me/address/{address_no}")
+    public ResponseEntity<ResponseMessageDto> updateAddress(@RequestBody AddressDto newaddressDto, @PathVariable("address_no") Long addressNo) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        // 사용자 조회
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+
+            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+        }
+        addressService.updateAddress(addressNo, newaddressDto);
+
+        StatusCode statusCode = StatusCode.SUCCESS;
+        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+    }
+
+    @ApiOperation(value = "회원 기본배송지 설정")
+    @PatchMapping("/me/address/{address_no}/default")
+    public ResponseEntity<ResponseMessageDto> setDefaultAddress(@PathVariable("address_no") Long addressNo) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        // 사용자 조회
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+
+            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+        }
+
+        addressService.setDefaultAddress(addressNo);
+
+        StatusCode statusCode = StatusCode.SUCCESS;
+        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+
+    }
+
+    @ApiOperation(value = "배송지 삭제")
+    @DeleteMapping("/me/address")
+    public ResponseEntity<ResponseMessageDto> deleteAddress(@RequestParam("address_no") Long addressNo) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        // 사용자 조회
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+
+            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+        }
+
+        addressService.deleteAddress(addressNo);
+
+        StatusCode statusCode = StatusCode.SUCCESS;
+        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+    }
+
+
+    //=========================================== 위시리스트 ======================================================================================
+
+    @ApiOperation(value = "관심 상품 조회")
+    @GetMapping("/me/wishlist")
+    public ResponseEntity<ResponseMessageDto> getWishLists (@RequestParam(value = "per_page", defaultValue = "10") int perPage,
+                                                            @RequestParam(value = "cursor", defaultValue = "1")int cursor) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        // 사용자 조회
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+
+            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+        }
+
+
+        Sort sort = Sort.by(Sort.Direction.DESC,"productSizeNo");
+        PageRequest pageRequest = PageRequest.of(cursor - 1, perPage, sort);
+        // wishlist에 잇는 userno 추출 하고, 거기 해당하는 productsize 다시 리스트 추가해야함.
+        List<Wishlist> myWishList = wishlistService.getUserWishList(optionalUser.get());
+        List<ProductSize> myWishProductSizes = productSizeService.getMyWishListProductSizes(myWishList);
+
+        Page<ProductSize> pagingProductSize = productSizeService.getPagedProductSizes(myWishProductSizes, pageRequest);
+        List<ProductSizeDto> productSizeDtoList = productSizeService.setProductSizeDto(pagingProductSize);
+
+        StatusCode statusCode = StatusCode.SUCCESS;
+        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+        responseMessageDto.addData("productSizeDtoList", productSizeDtoList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+    }
+
+    @ApiOperation(value = "관심 상품 등록/해제")
+    @PostMapping("/me/wishlist")
+    public ResponseEntity<ResponseMessageDto> addOrDeleteWishList(@RequestBody ProductSizeDto productSizeDto){ //토글//product Size No?받아와야함.
+        //if userno가 wishlist에 잇으면 해제. 없으면 등록.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+
+        // 사용자 조회
+        Optional<User> optionalUser = userService.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+
+            StatusCode statusCode = StatusCode.FIND_USER_FAILED;
+            ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+        }
+
+        ProductSize productSize = productSizeService.getProductSizeByNo(productSizeDto.getProductSizeNo());
+        boolean isWishlistRegistered = wishlistService.updateWishlist(optionalUser.get(), productSize);
+
+        StatusCode statusCode = StatusCode.SUCCESS;
+        ResponseMessageDto responseMessageDto = new ResponseMessageDto(statusCode.getCode(), statusCode.getMessage(), null);
+        responseMessageDto.addData("isWishlistRegistered" , isWishlistRegistered); // 상품정보
+        responseMessageDto.addData("productSizeNo" , productSizeDto.getProductSizeNo());
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessageDto);
+    }
+
+
 }

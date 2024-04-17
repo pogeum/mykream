@@ -1,11 +1,12 @@
 
 package com.kream.chouxkream.product.model.entity;
 
+import com.kream.chouxkream.user.model.entity.Wishlist;
 import com.kream.chouxkream.bid.model.entity.Bid;
-import com.kream.chouxkream.product.model.entity.Product;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,19 +35,11 @@ public class ProductSize {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no")
     private Product product;
+  
+    @OneToMany(mappedBy = "productSize")// 하나의 productsize객체가 여러 wishlist를 참조할수 있다.
+    private List<Wishlist> wishlist;
 
-//<<<<<<< HEAD:src/main/java/com/kream/chouxkream/productsize/ProductSize.java
-//    @OneToMany(mappedBy = "productSize")// 하나의 productsize객체가 여러 wishlist를 참조할수 있다.
-//    private List<Wishlist> wishlist;
-//
-////    public void setWishlist(Wishlist wishlist) {
-////        this.wishlist = wishlist;
-////    }
-////
-////    public Wishlist getWishlist() {
-////        return wishlist;
-////    }
-//=======
+
     @Builder.Default
     @OneToMany(mappedBy = "productSize", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<Bid> bids = new HashSet<>();

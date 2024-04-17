@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -29,6 +28,4 @@ public class Wishlist {
 
     @Column(columnDefinition = "timestamp default current_timestamp")
     private Timestamp createDate;
-
-
 }

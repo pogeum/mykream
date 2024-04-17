@@ -35,11 +35,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.security.SecureRandom;
-
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -301,7 +299,6 @@ public class UserService {
         }
     }
 
-
     public int getMyPoints(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("not found user"));
@@ -322,13 +319,6 @@ public class UserService {
         user.Activate();
         userRepository.save(user);
     }
-
-//    public Set<Wishlist> getWishList(String email) {
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(()->new RuntimeException("not found user"));
-//
-//        return user.getWishlistSet();
-//    }
 
     @Transactional
     public Page<Bid> getPagedBuyBidByUserNo(Long userNo, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {

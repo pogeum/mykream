@@ -21,6 +21,7 @@ import java.util.Set;
 @Builder
 @DynamicInsert
 @DynamicUpdate
+@ToString
 public class User {
 
     @Id
@@ -62,7 +63,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private Set<UserRole> userRoles = new HashSet<>();
 
-
     @OneToMany(mappedBy = "user")
     private List<Wishlist> wishlist;
 
@@ -73,8 +73,6 @@ public class User {
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private Set<Address> addresses = new HashSet<>();
-
-
 
     public void encodePassword(PasswordEncoder passwordEncoder){
         this.password = passwordEncoder.encode(password);

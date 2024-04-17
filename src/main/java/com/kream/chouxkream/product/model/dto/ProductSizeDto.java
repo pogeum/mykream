@@ -7,19 +7,16 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
-//@Getter
-//@Setter
-//@AllArgsConstructor
 public class ProductSizeDto {
+
     private Long productSizeNo;
+    private String sizeName;
+
+    // ProductImage Info
+    private String imageUrl;
+
     public ProductSizeDto() {
         // 기본 생성자 추가
     }
-//    private String sizeName;
-//    private int stock;
-//    private int sellCount;
-//
-//    private Long productNo;
-//    private Long wishListNo;
 
 }
